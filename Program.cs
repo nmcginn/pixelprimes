@@ -10,7 +10,7 @@ using System.Drawing.Imaging;
  *   Fun little program to play with pixels
  *   Writes black pixel if prime, white if composite
  * Written by Nathan McGinn
- *   Last Modified 07/10/2013
+ *   Last Modified 07/11/2013
  */
 
 namespace PixelTest
@@ -19,15 +19,18 @@ namespace PixelTest
     {
         static void Main(string[] args)
         {
-            int width = 1600;
-            int height = 1600;
+            int width = 800;
+            int height = 800;
             string path = @"C:\Users\Derek\Desktop\primes.png";
+#if DEBUG
+            int verify = 0;
+#endif
 
             using (Bitmap bmp = new Bitmap(width, height))
             {
                 Console.WriteLine("Starting calculations...");
+                Random r = new Random();
 
-                int verify = 0;
                 // for every pixel in the new bitmap
                 for (int i = 0; i < bmp.Width; i++)
                 {
@@ -36,8 +39,14 @@ namespace PixelTest
                         // set primes to black, composite numbers to white
                         if (IsPrime(i*width + j))
                         {
-                            bmp.SetPixel(j, i, Color.Black);
+                            // 225 instead of 255 to avoid colors too close to white
+                            int red = r.Next(0,225);
+                            int green = r.Next(0,225);
+                            int blue = r.Next(0,225);
+                            bmp.SetPixel(j, i, Color.FromArgb(red,green,blue));
+#if DEBUG
                             if (verify < 10) { Console.WriteLine(i * width + j); verify++; }
+#endif
                         }
                         else
                         {
