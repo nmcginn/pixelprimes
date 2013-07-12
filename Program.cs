@@ -10,7 +10,7 @@ using System.Drawing.Imaging;
  *   Fun little program to play with pixels
  *   Writes randomly colored pixel if prime, white if composite
  * Written by Nathan McGinn
- *   Last Modified 07/12/2013
+ *   Last Modified 07/11/2013
  */
 
 namespace PixelTest
