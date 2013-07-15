@@ -8,9 +8,10 @@ using System.Drawing.Imaging;
 
 /* PixelTest
  *   Fun little program to play with pixels
- *   Writes randomly colored pixel if prime, white if composite
+ *   Creates an Ulam's Spiral with randomly colored primes
+ *     Note: Crazy hard to follow code, recommend refactoring
  * Written by Nathan McGinn
- *   Last Modified 07/11/2013
+ *   Last Modified 07/14/2013
  */
 
 namespace PixelTest
@@ -19,39 +20,123 @@ namespace PixelTest
     {
         static void Main(string[] args)
         {
-            int width = 800;
-            int height = 800;
+            int width = 801;
+            int height = 801;
+            bool toright = true;
             string path = @"C:\Users\Derek\Desktop\primes.png";
-#if DEBUG
-            int verify = 0;
-#endif
 
             using (Bitmap bmp = new Bitmap(width, height))
             {
                 Console.WriteLine("Starting calculations...");
-                Random r = new Random();
 
-                // for every pixel in the new bitmap
-                for (int i = 0; i < bmp.Width; i++)
+                // set up our needed variables
+                Random r = new Random();
+                int pixelY = height / 2;
+                int pixelX = (width / 2);
+                int pixelNum = 1;
+                int movement = 1;
+
+                // make sure 1 is filled in
+                bmp.SetPixel(pixelX, pixelY, Color.White);
+
+                // begin the primary loop
+                while (movement < width && movement < height)
                 {
-                    for (int j = 0; j < bmp.Height; j++)
+                    // right and up movement
+                    if (toright)
                     {
-                        // set primes to black, composite numbers to white
-                        if (IsPrime(i*width + j))
+                        // iterate right
+                        for (int i = 1; i <= movement; i++)
                         {
-                            // 225 instead of 255 to avoid colors too close to white
-                            int red = r.Next(0,225);
-                            int green = r.Next(0,225);
-                            int blue = r.Next(0,225);
-                            bmp.SetPixel(j, i, Color.FromArgb(red,green,blue));
-#if DEBUG
-                            if (verify < 10) { Console.WriteLine(i * width + j); verify++; }
-#endif
+                            pixelNum++;
+                            pixelX++;
+                            if (IsPrime(pixelNum))
+                            {
+                                int red = r.Next(0, 225);
+                                int green = r.Next(0, 225);
+                                int blue = r.Next(0, 225);
+                                bmp.SetPixel(pixelX,pixelY,Color.FromArgb(red,green,blue));
+                            }
+                            else
+                            {
+                                bmp.SetPixel(pixelX,pixelY,Color.White);
+                            }
                         }
-                        else
+                        // iterate up
+                        for (int i = 1; i <= movement; i++)
                         {
-                            bmp.SetPixel(j, i, Color.White);
+                            pixelNum++;
+                            pixelY--;
+                            if (IsPrime(pixelNum))
+                            {
+                                int red = r.Next(0, 225);
+                                int green = r.Next(0, 225);
+                                int blue = r.Next(0, 225);
+                                bmp.SetPixel(pixelX, pixelY, Color.FromArgb(red, green, blue));
+                            }
+                            else
+                            {
+                                bmp.SetPixel(pixelX, pixelY, Color.White);
+                            }
                         }
+                    }
+                    // left and down movement
+                    else
+                    {
+                        // iterate left
+                        for (int i = 1; i <= movement; i++)
+                        {
+                            pixelNum++;
+                            pixelX--;
+                            if (IsPrime(pixelNum))
+                            {
+                                int red = r.Next(0, 225);
+                                int green = r.Next(0, 225);
+                                int blue = r.Next(0, 225);
+                                bmp.SetPixel(pixelX,pixelY,Color.FromArgb(red,green,blue));
+                            }
+                            else
+                            {
+                                bmp.SetPixel(pixelX,pixelY,Color.White);
+                            }
+                        }
+                        // iterate down
+                        for (int i = 1; i <= movement; i++)
+                        {
+                            pixelNum++;
+                            pixelY++;
+                            if (IsPrime(pixelNum))
+                            {
+                                int red = r.Next(0, 225);
+                                int green = r.Next(0, 225);
+                                int blue = r.Next(0, 225);
+                                bmp.SetPixel(pixelX,pixelY,Color.FromArgb(red,green,blue));
+                            }
+                            else
+                            {
+                                bmp.SetPixel(pixelX,pixelY,Color.White);
+                            }
+                        }
+                    }
+                    movement++;
+                    toright = !toright;
+                }// end outer loop
+                // need to make sure we get the bottom row on completion
+                movement--;
+                for (int i = 1; i <= movement; i++)
+                {
+                    pixelNum++;
+                    pixelX++;
+                    if (IsPrime(pixelNum))
+                    {
+                        int red = r.Next(0, 225);
+                        int green = r.Next(0, 225);
+                        int blue = r.Next(0, 225);
+                        bmp.SetPixel(pixelX, pixelY, Color.FromArgb(red, green, blue));
+                    }
+                    else
+                    {
+                        bmp.SetPixel(pixelX, pixelY, Color.White);
                     }
                 }
 
