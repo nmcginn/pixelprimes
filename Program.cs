@@ -17,7 +17,7 @@ using System.IO;
 
 namespace PixelTest
 {
-   partial class Program
+    partial class Program
     {
         // Main - Program Entry Point
         static void Main(string[] args)
