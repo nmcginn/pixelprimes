@@ -9,144 +9,105 @@ using System.Drawing.Imaging;
 /* PixelTest
  *   Fun little program to play with pixels
  *   Creates an Ulam's Spiral with randomly colored primes
- *     Note: Crazy hard to follow code, recommend refactoring
+ *     Note: Code is still somewhat sloppy but it's an improvement dammit
  * Written by Nathan McGinn
- *   Last Modified 07/14/2013
+ *   Last Modified 07/15/2013
  */
 
 namespace PixelTest
 {
     class Program
     {
+        // Class variables (to make less argument-intensive method calls)
+        static int width = 801, height = 801;
+        static int pixelY = 400, pixelX = 400; // half of width,height; should be truncated to lower value
+        static int pixelNum = 1, movement = 1;
+        static Random r = new Random();
+
+        // Main - Program Entry Point
         static void Main(string[] args)
         {
-            int width = 801;
-            int height = 801;
             bool toright = true;
             string path = @"C:\Users\Derek\Desktop\primes.png";
 
-            using (Bitmap bmp = new Bitmap(width, height))
+            Bitmap bmp = new Bitmap(width, height);
+            Console.WriteLine("Starting calculations...");
+
+            // make sure 1 is filled in
+            bmp.SetPixel(pixelX, pixelY, Color.White);
+
+            // begin the primary loop
+            while (movement < width && movement < height)
             {
-                Console.WriteLine("Starting calculations...");
-
-                // set up our needed variables
-                Random r = new Random();
-                int pixelY = height / 2;
-                int pixelX = (width / 2);
-                int pixelNum = 1;
-                int movement = 1;
-
-                // make sure 1 is filled in
-                bmp.SetPixel(pixelX, pixelY, Color.White);
-
-                // begin the primary loop
-                while (movement < width && movement < height)
+                // right and up movement
+                if (toright)
                 {
-                    // right and up movement
-                    if (toright)
-                    {
-                        // iterate right
-                        for (int i = 1; i <= movement; i++)
-                        {
-                            pixelNum++;
-                            pixelX++;
-                            if (IsPrime(pixelNum))
-                            {
-                                int red = r.Next(0, 225);
-                                int green = r.Next(0, 225);
-                                int blue = r.Next(0, 225);
-                                bmp.SetPixel(pixelX,pixelY,Color.FromArgb(red,green,blue));
-                            }
-                            else
-                            {
-                                bmp.SetPixel(pixelX,pixelY,Color.White);
-                            }
-                        }
-                        // iterate up
-                        for (int i = 1; i <= movement; i++)
-                        {
-                            pixelNum++;
-                            pixelY--;
-                            if (IsPrime(pixelNum))
-                            {
-                                int red = r.Next(0, 225);
-                                int green = r.Next(0, 225);
-                                int blue = r.Next(0, 225);
-                                bmp.SetPixel(pixelX, pixelY, Color.FromArgb(red, green, blue));
-                            }
-                            else
-                            {
-                                bmp.SetPixel(pixelX, pixelY, Color.White);
-                            }
-                        }
-                    }
-                    // left and down movement
-                    else
-                    {
-                        // iterate left
-                        for (int i = 1; i <= movement; i++)
-                        {
-                            pixelNum++;
-                            pixelX--;
-                            if (IsPrime(pixelNum))
-                            {
-                                int red = r.Next(0, 225);
-                                int green = r.Next(0, 225);
-                                int blue = r.Next(0, 225);
-                                bmp.SetPixel(pixelX,pixelY,Color.FromArgb(red,green,blue));
-                            }
-                            else
-                            {
-                                bmp.SetPixel(pixelX,pixelY,Color.White);
-                            }
-                        }
-                        // iterate down
-                        for (int i = 1; i <= movement; i++)
-                        {
-                            pixelNum++;
-                            pixelY++;
-                            if (IsPrime(pixelNum))
-                            {
-                                int red = r.Next(0, 225);
-                                int green = r.Next(0, 225);
-                                int blue = r.Next(0, 225);
-                                bmp.SetPixel(pixelX,pixelY,Color.FromArgb(red,green,blue));
-                            }
-                            else
-                            {
-                                bmp.SetPixel(pixelX,pixelY,Color.White);
-                            }
-                        }
-                    }
-                    movement++;
-                    toright = !toright;
-                }// end outer loop
-                // need to make sure we get the bottom row on completion
-                movement--;
-                for (int i = 1; i <= movement; i++)
-                {
-                    pixelNum++;
-                    pixelX++;
-                    if (IsPrime(pixelNum))
-                    {
-                        int red = r.Next(0, 225);
-                        int green = r.Next(0, 225);
-                        int blue = r.Next(0, 225);
-                        bmp.SetPixel(pixelX, pixelY, Color.FromArgb(red, green, blue));
-                    }
-                    else
-                    {
-                        bmp.SetPixel(pixelX, pixelY, Color.White);
-                    }
+                    MovePixels(Dir.Right, ref bmp);
+                    MovePixels(Dir.Up, ref bmp);
                 }
+                // left and down movement
+                else
+                {
+                    MovePixels(Dir.Left, ref bmp);
+                    MovePixels(Dir.Down, ref bmp);
+                }
+                movement++;
+                toright = !toright;
+            }
 
-                Console.WriteLine("Calculations complete...");
+            // need to make sure we get the bottom row on completion
+            movement--;
+            MovePixels(Dir.Right, ref bmp);
 
-                // the bitmap has been created, save it
-                bmp.Save(path, ImageFormat.Png);
+            Console.WriteLine("Calculations complete...");
 
-                Console.WriteLine("Image saved, press enter key to close...");
-                Console.ReadLine();
+            // the bitmap has been created, save & dispose of it
+            bmp.Save(path, ImageFormat.Png);
+            bmp.Dispose();
+
+            Console.WriteLine("Image saved, press enter key to close...");
+            Console.ReadLine();
+        }
+
+        // MovePixels draws in prime pixels in 1 direction
+        static void MovePixels(Dir direction, ref Bitmap bmp)
+        {
+            for (int i = 1; i <= movement; i++)
+            {
+                // handle direction-specific tasks (movement)
+                switch (direction)
+                {
+                    case Dir.Down:
+                        pixelNum++;
+                        pixelY++;
+                        break;
+                    case Dir.Up:
+                        pixelNum++;
+                        pixelY--;
+                        break;
+                    case Dir.Left:
+                        pixelNum++;
+                        pixelX--;
+                        break;
+                    case Dir.Right:
+                        pixelNum++;
+                        pixelX++;
+                        break;
+                    default:
+                        break;
+                }
+                // handle universal tasks (pixel coloration)
+                if (IsPrime(pixelNum))
+                {
+                    int red = r.Next(0, 225);
+                    int green = r.Next(0, 225);
+                    int blue = r.Next(0, 225);
+                    bmp.SetPixel(pixelX, pixelY, Color.FromArgb(red, green, blue));
+                }
+                else
+                {
+                    bmp.SetPixel(pixelX, pixelY, Color.White);
+                }
             }
         }
 
@@ -159,6 +120,12 @@ namespace PixelTest
             }
             if (x > 1) return true;
             return false;
+        }
+
+        // Enum to control MovePixels direction
+        enum Dir
+        {
+            Up, Down, Left, Right
         }
     }
 }
