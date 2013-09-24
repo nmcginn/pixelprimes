@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 /* PixelTest Helper Methods
  *   Called from the main program
  * Written by Nathan McGinn
- *   Last Modified 07/16/2013
+ *   Last Modified 09/24/2013
  */
 
 namespace PixelTest
@@ -16,8 +16,10 @@ namespace PixelTest
     partial class Program
     {
         // Class variables (to make less argument-intensive method calls)
-        static int width = 801, height = 801;
-        static int pixelY = 400, pixelX = 400; // half of width,height; should be truncated to lower value
+        static int width = 800, height = 800;
+        // For even width/height, X needs to be 1 less than half
+        // For odd width/height, integer division is sufficient (half floored)
+        static int pixelY = 400, pixelX = 399;
         static int pixelNum = 1, movement = 1;
         static string path = @"C:\Users\Derek\Desktop\primes.png";
         static Random r = new Random();

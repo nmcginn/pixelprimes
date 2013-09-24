@@ -10,9 +10,8 @@ using System.IO;
 /* PixelTest
  *   Fun little program to play with pixels
  *   Creates an Ulam's Spiral with randomly colored primes
- *     Note: Code is still somewhat sloppy but it's an improvement dammit
  * Written by Nathan McGinn
- *   Last Modified 07/16/2013
+ *   Last Modified 09/24/2013
  */
 
 namespace PixelTest
@@ -31,16 +30,21 @@ namespace PixelTest
                 case 1:
                     width = Int32.Parse(args[0]);
                     height = width;
-                    pixelX = width / 2;
                     pixelY = height / 2;
+                    pixelX = (int)Math.Ceiling(width / 2.0) - 1;
                     break;
                 // case 2 assumes width/height and path
                 case 2:
                     width = Int32.Parse(args[0]);
                     height = width;
-                    pixelX = width / 2;
                     pixelY = height / 2;
-                    path = Path.GetFullPath(args[1]);
+                    pixelX = (int)Math.Ceiling(width / 2.0) - 1;
+                    // full path provided
+                    if (Path.IsPathRooted(args[1])) path = Path.GetFullPath(args[1]);
+                    // partial path provided, assume C: as root
+                    else path = Path.GetFullPath(@"C:\" + args[1]);
+                    // add the filename if the user didn't provide it
+                    if (!path.EndsWith(".png")) path += @"\primes.png";
                     break;
                 default:
                     break;
@@ -76,7 +80,8 @@ namespace PixelTest
 
             // need to make sure we get the bottom row on completion
             movement--;
-            MovePixels(Dir.Right, ref bmp);
+            if (width % 2 == 1) MovePixels(Dir.Right, ref bmp);
+            else MovePixels(Dir.Left, ref bmp);
 
             Console.WriteLine("Calculations complete...");
 
