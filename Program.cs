@@ -1,24 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
-using System.Threading.Tasks;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-/* PixelTest
- *   Fun little program to play with pixels
- *   Creates an Ulam's Spiral with randomly colored primes
- * Written by Nathan McGinn
- *   Last Modified 09/24/2013
- */
-
-namespace PixelTest
+namespace pixelprimes
 {
     partial class Program
     {
-        // Main - Program Entry Point
         static void Main(string[] args)
         {
             // check to see if arguments have been passed in
@@ -90,7 +82,7 @@ namespace PixelTest
             bmp.Dispose();
 
             Console.WriteLine("Image saved, press enter key to close...");
-            Console.ReadLine();
+            Console.ReadKey();
         }
     }
 }

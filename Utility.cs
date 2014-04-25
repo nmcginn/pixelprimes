@@ -1,27 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-/* PixelTest Helper Methods
- *   Called from the main program
- * Written by Nathan McGinn
- *   Last Modified 09/24/2013
- */
-
-namespace PixelTest
+namespace pixelprimes
 {
     partial class Program
     {
         // Class variables (to make less argument-intensive method calls)
-        static int width = 800, height = 800;
+        static int width = 400, height = 400;
         // For even width/height, X needs to be 1 less than half
         // For odd width/height, integer division is sufficient (half floored)
-        static int pixelY = 400, pixelX = 399;
+        static int pixelY = 200, pixelX = 199;
         static int pixelNum = 1, movement = 1;
-        static string path = @"C:\Users\Derek\Desktop\primes.png";
+        static string path = Path.Combine(Environment.ExpandEnvironmentVariables("%HOMEPATH%"), "Desktop", "primes.png");
         static Random r = new Random();
 
         // MovePixels draws in prime pixels in 1 direction
