@@ -2,6 +2,5 @@ App.config
 Properties/
 bin/
 obj/
-*.csproj
 *.sln
 *.suo
